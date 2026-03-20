@@ -1,0 +1,5 @@
+escenario,factible,estado,gasto_total,meta_ahorro,ahorro_optimo,presupuesto_optimizado,costo_impacto
+Base (8%),True,Optimization terminated successfully. (HiGHS Status 7: Optimal),193720113393.45996,15497609071.476797,15497609071.476797,178222504321.98322,60468920655.07519
+Conservador (5%),True,Optimization terminated successfully. (HiGHS Status 7: Optimal),193720113393.45996,9686005669.672998,9686005669.672998,184034107723.787,37222507047.859985
+Agresivo (15%),False,The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None),193720113393.45996,29058017009.018993,,,
+Inflacion +12% ahorro,False,The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None),209217722464.9368,25106126695.792416,,,

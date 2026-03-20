@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Optimizacion de Gastos - Dashboard</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+	<style>
+		.wrap { max-width: 1200px; margin: 0 auto; padding: 24px; }
+		.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+		.card-pad { padding: 16px; }
+		.btn-run { padding: 10px 16px; font-weight: 600; cursor: pointer; }
+		.mono { white-space: pre-wrap; font-family: Consolas, Monaco, monospace; }
+		.table-wrap { overflow-x: auto; }
+		table { width: 100%; border-collapse: collapse; }
+		th, td { border-bottom: 1px solid #eee; padding: 8px; text-align: left; font-size: 14px; }
+		.img-fit { width: 100%; height: auto; border-radius: 12px; }
+		@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+	</style>
+</head>
+<body>
+	<div class="wrap">
+		<h1 class="section-title">Dashboard de Optimizacion Presupuestal</h1>
+
+		<div class="card card-pad" style="margin-bottom:16px;">
+			<form method="post">
+				<button class="btn btn-primary btn-run" type="submit">Ejecutar/Recalcular Analisis</button>
+			</form>
+			{% if run_message %}
+			<div class="alert" style="margin-top:12px;">
+				<div class="mono">{{ run_message }}</div>
+			</div>
+			{% endif %}
+			{% if not has_outputs %}
+			<div class="alert" style="margin-top:12px;">
+				Aun no hay salidas generadas. Haz clic en "Ejecutar/Recalcular Analisis".
+			</div>
+			{% endif %}
+		</div>
+
+		<div class="card card-pad" style="margin-bottom:16px;">
+			<h2>Comparativo de Escenarios</h2>
+			{% if comparison_rows %}
+			<div class="table-wrap">
+				<table>
+					<thead>
+						<tr>
+							{% for c in comparison_columns %}
+							<th>{{ c }}</th>
+							{% endfor %}
+						</tr>
+					</thead>
+					<tbody>
+						{% for row in comparison_rows %}
+						<tr>
+							{% for c in comparison_columns %}
+							<td>{{ row[c] }}</td>
+							{% endfor %}
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			{% else %}
+			<p>No hay datos de escenarios para mostrar.</p>
+			{% endif %}
+		</div>
+
+		<div class="grid" style="margin-bottom:16px;">
+			{% for chart in charts %}
+			<div class="card card-pad">
+				<img class="img-fit" src="{{ url_for('outputs', filename=chart) }}" alt="{{ chart }}">
+				<p><a href="{{ url_for('outputs', filename=chart) }}" target="_blank" rel="noreferrer">Abrir {{ chart }}</a></p>
+			</div>
+			{% endfor %}
+		</div>
+
+		<div class="card card-pad" style="margin-bottom:16px;">
+			<h2>Top Recortes Escenario Base</h2>
+			{% if top_rows %}
+			<div class="table-wrap">
+				<table>
+					<thead>
+						<tr>
+							<th>codigo</th>
+							<th>cuenta</th>
+							<th>valor_ajustado</th>
+							<th>corte_optimo</th>
+							<th>pct_corte_sobre_linea</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for r in top_rows %}
+						<tr>
+							<td>{{ r.get('codigo', '') }}</td>
+							<td>{{ r.get('cuenta', '') }}</td>
+							<td>{{ r.get('valor_ajustado', '') }}</td>
+							<td>{{ r.get('corte_optimo', '') }}</td>
+							<td>{{ r.get('pct_corte_sobre_linea', '') }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			{% else %}
+			<p>No hay detalle del escenario base.</p>
+			{% endif %}
+		</div>
+
+		<div class="card card-pad" style="margin-bottom:16px;">
+			<h2>Memorando Tecnico</h2>
+			<div class="mono">{{ memo_text }}</div>
+			<p>
+				<a href="{{ url_for('outputs', filename='memorando_tecnico.md') }}" target="_blank" rel="noreferrer">Descargar memorando_tecnico.md</a>
+				|
+				<a href="{{ url_for('outputs', filename='cuestionario_resuelto.md') }}" target="_blank" rel="noreferrer">Descargar cuestionario_resuelto.md</a>
+			</p>
+		</div>
+	</div>
+</body>
+</html>
